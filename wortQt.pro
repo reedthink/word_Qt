@@ -10,9 +10,11 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
+    mychild.cpp \
     myword.cpp
 
 HEADERS += \
+    mychild.h \
     myword.h
 
 # Default rules for deployment.

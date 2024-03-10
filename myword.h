@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+class QMdiArea;
+
 class MyWord : public QMainWindow
 {
     Q_OBJECT
@@ -10,5 +12,8 @@ class MyWord : public QMainWindow
 public:
     MyWord(QWidget *parent = nullptr);
     ~MyWord();
+
+private:
+    QMdiArea *mdiArea;
 };
 #endif // MYWORD_H
