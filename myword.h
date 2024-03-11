@@ -8,6 +8,8 @@ class QAction;
 class QMenu;
 class QComboBox;
 class QFontComboBox;
+class MyChild;
+class QMdiSubWindow;
 
 class MyWord : public QMainWindow
 {
@@ -69,8 +71,14 @@ private:
     QFontComboBox *comboFont;
     QComboBox *comboSize;
 
+    void enabledText();
+    MyChild *activeMyChild();
+
 private slots:
     void textAlign(QAction *a);
     void about();
+    void fileNew();
+    MyChild *createMyChild();
+    void updateMenus();
 };
 #endif // MYWORD_H

@@ -1,4 +1,5 @@
 #include "myword.h"
+#include "mychild.h"
 #include <QtWidgets>
 
 const QString rsrcPath = ":/images";
@@ -11,6 +12,8 @@ MyWord::MyWord(QWidget *parent)
     mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
+    updateMenus();
     move(200, 150);
     resize(800, 500);
 
@@ -28,7 +31,7 @@ void MyWord::createActions()
     newAct->setShortcuts(QKeySequence::New);
     newAct->setToolTip("新建");
     newAct->setStatusTip(tr("创建一个新文档"));
-    //connect(newAct, SIGNAL(triggered()), this, SLOT(fileNew()));
+    connect(newAct, SIGNAL(triggered()), this, SLOT(fileNew()));
 
     openAct = new QAction(QIcon(rsrcPath + "/fileopen.png"), tr("打开(&O)..."), this);
     openAct->setShortcuts(QKeySequence::Open);
@@ -328,4 +331,75 @@ void MyWord::createToolBars()
 //    connect(comboSize, SIGNAL(activated(QString)), this, SLOT(textSize(QString)));
 //    comboSize->setCurrentIndex(comboSize->findText(QString::number(QApplication::font().pointSize())));
 
+}
+
+MyChild *MyWord::createMyChild()
+{
+    MyChild *child = new MyChild;
+    mdiArea->addSubWindow(child);
+    connect(child, SIGNAL(copyAvailable(bool)), cutAct, SLOT(setEnabled(bool)));
+    connect(child, SIGNAL(copyAvailable(bool)), copyAct, SLOT(setEnabled(bool)));
+
+    return child;
+}
+
+void MyWord::fileNew()
+{
+    MyChild *child = createMyChild();
+    child->newFile();
+    child->show();
+    enabledText();
+}
+
+void MyWord::enabledText()
+{
+    boldAct->setEnabled(true);
+    italicAct->setEnabled(true);
+    underlineAct->setEnabled(true);
+    leftAlignAct->setEnabled(true);
+    centerAct->setEnabled(true);
+    rightAlignAct->setEnabled(true);
+    justifyAct->setEnabled(true);
+    colorAct->setEnabled(true);
+}
+
+void MyWord::updateMenus()
+{
+    bool hasMyChild = (activeMyChild() != 0);
+
+    saveAct->setEnabled(hasMyChild);
+    saveAsAct->setEnabled(hasMyChild);
+    printAct->setEnabled(hasMyChild);
+    printPreviewAct->setEnabled(hasMyChild);
+
+    pasteAct->setEnabled(hasMyChild);
+
+    closeAct->setEnabled(hasMyChild);
+    closeAllAct->setEnabled(hasMyChild);
+    tileAct->setEnabled(hasMyChild);
+    cascadeAct->setEnabled(hasMyChild);
+    nextAct->setEnabled(hasMyChild);
+    previousAct->setEnabled(hasMyChild);
+    separatorAct->setEnabled(hasMyChild);
+
+    bool hasSelection = (activeMyChild() && activeMyChild()->textCursor().hasSelection());
+
+    cutAct->setEnabled(hasSelection);
+    copyAct->setEnabled(hasSelection);
+
+    boldAct->setEnabled(hasSelection);
+    italicAct->setEnabled(hasSelection);
+    underlineAct->setEnabled(hasSelection);
+    leftAlignAct->setEnabled(hasSelection);
+    centerAct->setEnabled(hasSelection);
+    rightAlignAct->setEnabled(hasSelection);
+    justifyAct->setEnabled(hasSelection);
+    colorAct->setEnabled(hasSelection);
+}
+
+MyChild *MyWord::activeMyChild()
+{
+    if(QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
+        return qobject_cast<MyChild *>(activeSubWindow->widget());
+    return 0;
 }
