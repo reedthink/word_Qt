@@ -19,6 +19,9 @@ MyWord::MyWord(QWidget *parent)
 
     setWindowTitle(tr("Diy Word"));
 
+    windowMapper = new QSignalMapper(this);
+    connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
+
 }
 
 MyWord::~MyWord()
@@ -402,4 +405,42 @@ MyChild *MyWord::activeMyChild()
     if(QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
         return qobject_cast<MyChild *>(activeSubWindow->widget());
     return 0;
+}
+
+void MyWord::updateWindowMenu()
+{
+    windowMenu->clear();
+    windowMenu->addAction(closeAct);
+    windowMenu->addAction(closeAllAct);
+    windowMenu->addSeparator();
+    windowMenu->addAction(tileAct);
+    windowMenu->addAction(cascadeAct);
+    windowMenu->addSeparator();
+    windowMenu->addAction(nextAct);
+    windowMenu->addAction(previousAct);
+    windowMenu->addAction(separatorAct);
+
+    QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
+    separatorAct->setVisible(!windows.isEmpty());
+
+    for(int i=0 ;i < windows.size(); i++)
+    {
+        MyChild *child = qobject_cast<MyChild *>(windows.at(i)->widget());
+        QString text;
+        if(i<9)
+        {
+            text = tr("&%1 %2").arg(i+1).arg(child->userFriendlyCurrentFile());
+        }
+        else{
+            text = tr("%1 %2").arg(i+1).arg(child->userFriendlyCurrentFile());
+        }
+        QAction *action = windowMenu->addAction(text);
+        action->setCheckable(true);
+        action->setChecked(child == activeMyChild());
+
+        connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
+        windowMapper->setMapping(action, windows.at(i));
+    }
+    enabledText();
+
 }

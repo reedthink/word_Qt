@@ -10,6 +10,7 @@ class QComboBox;
 class QFontComboBox;
 class MyChild;
 class QMdiSubWindow;
+class QSignalMapper;
 
 class MyWord : public QMainWindow
 {
@@ -73,6 +74,7 @@ private:
 
     void enabledText();
     MyChild *activeMyChild();
+    QSignalMapper *windowMapper;
 
 private slots:
     void textAlign(QAction *a);
@@ -80,5 +82,6 @@ private slots:
     void fileNew();
     MyChild *createMyChild();
     void updateMenus();
+    void updateWindowMenu();
 };
 #endif // MYWORD_H
