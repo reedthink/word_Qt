@@ -159,11 +159,41 @@ void MyWord::createActions()
     justifyAct->setStatusTip(tr("将文字左右两端同时对齐，并根据需要增加字间距"));
 
     QPixmap pix(16, 16);
-    pix.fill(Qt:red);
+    pix.fill(Qt::red);
     colorAct = new QAction(pix, tr("颜色(&C)..."), this);
     colorAct->setToolTip("颜色");
     colorAct->setStatusTip(tr("设置文字颜色"));
 //    connect(colorAct, SIGNAL(triggered()), this, SLOT(textColor()));
+
+    //窗口主菜单
+    closeAct = new QAction(tr("关闭(&O)"), this);
+    closeAct->setStatusTip(tr("关闭活动文档子窗口"));
+    connect(closeAct, SIGNAL(triggered()), mdiArea, SLOT(closeActiveSubWindow()));
+
+    closeAllAct = new QAction(tr("关闭所有(&A)"), this);
+    closeAllAct->setStatusTip(tr("关闭所有子窗口"));
+    connect(closeAllAct, SIGNAL(triggered()), mdiArea, SLOT(closeAllSubWindows()));
+
+    tileAct = new QAction(tr("平铺(&T)"), this);
+    tileAct->setStatusTip(tr("平铺子窗口"));
+    connect(tileAct, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
+
+    cascadeAct = new QAction(tr("层叠(&C)"), this);
+    cascadeAct->setStatusTip(tr("层叠子窗口"));
+    connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
+
+    nextAct = new QAction(tr("下一个(&X)"), this);
+    nextAct->setShortcuts(QKeySequence::NextChild);
+    nextAct->setStatusTip(tr("移动焦点到下一个子窗口"));
+    connect(nextAct, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
+
+    previousAct = new QAction(tr("前一个(&V)"), this);
+    previousAct->setShortcuts(QKeySequence::PreviousChild);
+    previousAct->setStatusTip(tr("移动焦点到前一个子窗口"));
+    connect(nextAct, SIGNAL(triggered()), mdiArea, SLOT(activatePreviousSubWindow()));
+
+    separatorAct = new QAction(this);
+    separatorAct->setSeparator(true);
 
 }
 
@@ -204,6 +234,14 @@ void MyWord::createMenus()
     alignMenu->addAction(justifyAct);
 
     formatMenu->addAction(colorAct);
+
+    //窗口主菜单
+    windowMenu = menuBar()->addMenu(tr("窗口(&W)"));
+    updateWindowMenu();
+    connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
+    menuBar()->addSeparator();
+
+
 }
 
 void MyWord::textAlign(QAction *a){}

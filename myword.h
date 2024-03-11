@@ -45,6 +45,16 @@ private:
     QAction *justifyAct;
     QAction *colorAct;
 
+    QMenu *windowMenu;
+    QAction *closeAct;
+    QAction *closeAllAct;
+    QAction *tileAct;
+    QAction *cascadeAct;
+    QAction *nextAct;
+    QAction *previousAct;
+    QAction *separatorAct;
+
+
 private slots:
     void textAlign(QAction *a);
 };
