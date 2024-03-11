@@ -32,5 +32,20 @@ private:
 
     QMenu *editMenu;
     QAction *undoAct, *redoAct, *cutAct, *copyAct, *pasteAct;
+
+    QMenu *formatMenu;
+    QMenu *fontMenu;
+    QMenu *alignMenu;
+    QAction *boldAct;
+    QAction *italicAct;
+    QAction *underlineAct;
+    QAction *leftAlignAct;
+    QAction *centerAct;
+    QAction *rightAlignAct;
+    QAction *justifyAct;
+    QAction *colorAct;
+
+private slots:
+    void textAlign(QAction *a);
 };
 #endif // MYWORD_H
