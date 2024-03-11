@@ -13,6 +13,11 @@ MyWord::MyWord(QWidget *parent)
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
+
+    createActions();
+    createMenus();
+    createToolBars();
+    createStatusBar();
     updateMenus();
     move(200, 150);
     resize(800, 500);
@@ -443,4 +448,22 @@ void MyWord::updateWindowMenu()
     }
     enabledText();
 
+}
+
+void MyWord::closeEvent(QCloseEvent *event)
+{
+    mdiArea->closeAllSubWindows();
+    if (mdiArea->currentSubWindow())
+    {
+        event->ignore();
+    }
+    else
+    {
+        event->accept();
+    }
+}
+
+void MyWord::createStatusBar()
+{
+    statusBar()->showMessage(tr("就绪"));
 }

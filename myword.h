@@ -20,10 +20,15 @@ public:
     MyWord(QWidget *parent = nullptr);
     ~MyWord();
 
+protected:
+    void closeEvent(QCloseEvent *event);
+
 private:
     QMdiArea *mdiArea;
     void createActions();// 创建系统动作
     void createMenus(); //创建菜单
+    void createToolBars();
+    void createStatusBar();
 
     QMenu *fileMenu;
 
@@ -63,7 +68,6 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
 
-    void createToolBars();
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
     QToolBar *formatToolBar;
@@ -83,5 +87,6 @@ private slots:
     MyChild *createMyChild();
     void updateMenus();
     void updateWindowMenu();
+//    void setActiveSubWindow(QWidget *window);
 };
 #endif // MYWORD_H
