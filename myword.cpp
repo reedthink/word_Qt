@@ -195,6 +195,15 @@ void MyWord::createActions()
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
 
+    //帮助主菜单
+    aboutAct = new QAction(tr("关于(&A)"), this);
+    aboutAct->setStatusTip(tr("关于 DIY Word"));
+    connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+    aboutQtAct = new QAction(tr("关于Qt(&Q)"), this);
+    aboutQtAct->setStatusTip(tr("关于Qt库"));
+    connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
 }
 
 void MyWord::createMenus()
@@ -241,7 +250,17 @@ void MyWord::createMenus()
     connect(windowMenu, SIGNAL(aboutToShow()), this, SLOT(updateWindowMenu()));
     menuBar()->addSeparator();
 
+    //帮助主菜单
+    helpMenu = menuBar()->addMenu(tr("帮助(&H)"));
+    helpMenu->addAction(aboutAct);
+    helpMenu->addSeparator();
+    helpMenu->addAction(aboutQtAct);
 
 }
 
 void MyWord::textAlign(QAction *a){}
+
+void MyWord::about()
+{
+    QMessageBox::about(this, tr("这是一个基于Qt实现的文字处理软件，类似Word"));
+}

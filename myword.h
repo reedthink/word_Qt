@@ -54,8 +54,13 @@ private:
     QAction *previousAct;
     QAction *separatorAct;
 
+    QMenu *helpMenu;
+    QAction *aboutAct;
+    QAction *aboutQtAct;
+
 
 private slots:
     void textAlign(QAction *a);
+    void about();
 };
 #endif // MYWORD_H
