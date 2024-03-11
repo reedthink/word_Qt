@@ -1,6 +1,8 @@
 #include "myword.h"
 #include <QtWidgets>
 
+const QString rsrcPath = ":/images";
+
 MyWord::MyWord(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -22,7 +24,6 @@ MyWord::~MyWord()
 
 void MyWord::createActions()
 {
-    QString rsrcPath = "images";
     newAct = new QAction(QIcon(rsrcPath + "/filenew.png"), tr("新建(&N)"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setToolTip("新建");
@@ -262,5 +263,69 @@ void MyWord::textAlign(QAction *a){}
 
 void MyWord::about()
 {
-    QMessageBox::about(this, tr("这是一个基于Qt实现的文字处理软件，类似Word"));
+    QMessageBox::about(this, tr("关于"), tr("这是一个基于Qt实现的文字处理软件，类似Word"));
+}
+
+void MyWord::createToolBars()
+{
+    //文件工具条
+    fileToolBar = addToolBar(tr("文件"));
+    fileToolBar->addAction(newAct);
+    fileToolBar->addAction(openAct);
+    fileToolBar->addAction(saveAct);
+    fileToolBar->addSeparator();
+    fileToolBar->addAction(printAct);
+
+    //编辑工具条
+    editToolBar = addToolBar(tr("编辑"));
+    editToolBar->addAction(undoAct);
+    editToolBar->addAction(redoAct);
+    editToolBar->addSeparator();
+    editToolBar->addAction(cutAct);
+    editToolBar->addAction(copyAct);
+    editToolBar->addAction(pasteAct);
+
+    //格式工具条
+    formatToolBar = addToolBar(tr("格式"));
+    formatToolBar->addAction(boldAct);
+    formatToolBar->addAction(italicAct);
+    formatToolBar->addAction(underlineAct);
+    formatToolBar->addSeparator();
+    formatToolBar->addAction(leftAlignAct);
+    formatToolBar->addAction(centerAct);
+    formatToolBar->addAction(rightAlignAct);
+    formatToolBar->addAction(justifyAct);
+    formatToolBar->addSeparator();
+    formatToolBar->addAction(colorAct);
+
+    //组合选择栏
+    addToolBarBreak(Qt::TopToolBarArea);
+    comboToolBar = addToolBar(tr("组合选择"));
+    comboStyle = new QComboBox();
+    comboToolBar->addWidget(comboStyle);
+    comboStyle->addItem("标准");
+    comboStyle->addItem("项目符号 (●)");
+    comboStyle->addItem("项目符号 (○)");
+    comboStyle->addItem("项目符号 (■)");
+    comboStyle->addItem("编号 (⒈⒉⒊)");
+    comboStyle->addItem("编号 ( a.b.c.)");
+    comboStyle->addItem("编号 ( A.B.C.)");
+    comboStyle->addItem("编号 (ⅰ.ⅱ.ⅲ.)");
+    comboStyle->addItem("编号 (Ⅰ.Ⅱ.Ⅲ.)");
+    comboStyle->setStatusTip("段落加标号或编号");
+//    connect(comboStyle, SIGNAL(activated(int)), this, SLOT(textStyle(int)));
+
+    comboSize = new QComboBox();
+    comboToolBar->addWidget(comboSize);
+    comboSize->setEditable(true);
+    comboSize->setStatusTip("更改字号");
+
+    QFontDatabase db;
+    foreach(int size, db.standardSizes())
+    {
+        comboSize->addItem(QString::number(size));
+    }
+//    connect(comboSize, SIGNAL(activated(QString)), this, SLOT(textSize(QString)));
+//    comboSize->setCurrentIndex(comboSize->findText(QString::number(QApplication::font().pointSize())));
+
 }

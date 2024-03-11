@@ -6,6 +6,8 @@
 class QMdiArea;
 class QAction;
 class QMenu;
+class QComboBox;
+class QFontComboBox;
 
 class MyWord : public QMainWindow
 {
@@ -58,6 +60,14 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
 
+    void createToolBars();
+    QToolBar *fileToolBar;
+    QToolBar *editToolBar;
+    QToolBar *formatToolBar;
+    QToolBar *comboToolBar;
+    QComboBox *comboStyle;
+    QFontComboBox *comboFont;
+    QComboBox *comboSize;
 
 private slots:
     void textAlign(QAction *a);
