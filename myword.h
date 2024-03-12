@@ -2,6 +2,9 @@
 #define MYWORD_H
 
 #include <QMainWindow>
+#include <QPrintDialog>
+#include <QPrinter>
+#include <QPrintPreviewDialog>
 
 class QMdiArea;
 class QAction;
@@ -106,5 +109,8 @@ private slots:
     void textSize(const QString &p);
     void textColor();
     void textStyle(int styleIndex);
+    void filePrint();
+    void filePrintPreview();
+    void printPreview(QPrinter *);
 };
 #endif // MYWORD_H

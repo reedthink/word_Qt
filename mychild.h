@@ -2,6 +2,7 @@
 #define MYCHILD_H
 
 #include <QTextEdit>
+#include <QPrinter>
 
 class MyChild : public QTextEdit
 {

@@ -62,11 +62,11 @@ void MyWord::createActions()
     printAct->setShortcuts(QKeySequence::Print);
     printAct->setToolTip("打印");
     printAct->setStatusTip(tr("打印文档"));
-//    connect(printAct, SIGNAL(triggered()), this, SLOT(filePrint()));
+    connect(printAct, SIGNAL(triggered()), this, SLOT(filePrint()));
 
     printPreviewAct = new QAction(tr("打印预览..."), this);
     printPreviewAct->setStatusTip(tr("预览打印效果"));
-//    connect(printPreviewAct, SIGNAL(triggered()), this, SLOT(filePrintPreview()));
+    connect(printPreviewAct, SIGNAL(triggered()), this, SLOT(filePrintPreview()));
 
     exitAct = new QAction(tr("退出(&X)"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -624,7 +624,7 @@ void MyWord::textColor()
         QTextCharFormat fmt;
         fmt.setForeground(col);
         activeMyChild()->mergeFormatOnWordOrSelection(fmt);
-        colorChanged(col); //还没实现
+        colorChanged(col);
     }
 }
 
@@ -641,4 +641,29 @@ void MyWord::colorChanged(const QColor &c)
     QPixmap pix(16, 16);
     pix.fill(c);
     colorAct->setIcon(pix);
+}
+
+void MyWord::filePrint()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintDialog *dlg = new QPrintDialog(&printer, this);
+    if (activeMyChild()->textCursor().hasSelection())
+        dlg->addEnabledOption(QAbstractPrintDialog::PrintSelection);
+    dlg->setWindowTitle(tr("打印文档"));
+    if (dlg->exec() == QDialog::Accepted)
+        activeMyChild()->print(&printer);
+    delete dlg;
+}
+
+void MyWord::filePrintPreview()
+{
+    QPrinter printer(QPrinter::HighResolution);
+    QPrintPreviewDialog preview(&printer, this);
+    connect(&preview, SIGNAL(paintRequested(QPrinter*)), SLOT(printPreview(QPrinter*)));
+    preview.exec();
+}
+
+void MyWord::printPreview(QPrinter *printer)
+{
+    activeMyChild()->print(printer);
 }
