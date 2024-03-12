@@ -113,7 +113,7 @@ void MyWord::createActions()
     QFont bold;
     bold.setBold(true);
     boldAct->setFont(bold);
-//    connect(boldAct, SIGNAL(triggered()), this, SLOT(textBold()));
+    connect(boldAct, SIGNAL(triggered()), this, SLOT(textBold()));
 
     italicAct = new QAction(QIcon(rsrcPath + "/textitalic.png"), tr("倾斜(&I)"), this);
     italicAct->setCheckable(true);
@@ -123,7 +123,7 @@ void MyWord::createActions()
     QFont italic;
     italic.setItalic(true);
     italicAct->setFont(italic);
-//    connect(italicAct, SIGNAL(triggered()), this, SLOT(textItalic()));
+    connect(italicAct, SIGNAL(triggered()), this, SLOT(textItalic()));
 
     underlineAct = new QAction(QIcon(rsrcPath + "/textunder.png"), tr("下划线(&U)"), this);
     underlineAct->setCheckable(true);
@@ -133,7 +133,7 @@ void MyWord::createActions()
     QFont underline;
     underline.setUnderline(true);
     underlineAct->setFont(underline);
-//    connect(underlineAct, SIGNAL(triggered()), this, SLOT(textUnderline()));
+    connect(underlineAct, SIGNAL(triggered()), this, SLOT(textUnderline()));
 
     //段落子菜单中只能选一项
     QActionGroup *grp = new QActionGroup(this);
@@ -328,6 +328,11 @@ void MyWord::createToolBars()
     comboStyle->setStatusTip("段落加标号或编号");
 //    connect(comboStyle, SIGNAL(activated(int)), this, SLOT(textStyle(int)));
 
+    comboFont = new QFontComboBox();
+    comboToolBar->addWidget(comboFont);
+    comboFont->setStatusTip("更改字体");
+    connect(comboFont, SIGNAL(activated(QString)), this, SLOT(textFamily(QString)));
+
     comboSize = new QComboBox();
     comboToolBar->addWidget(comboSize);
     comboSize->setEditable(true);
@@ -338,8 +343,8 @@ void MyWord::createToolBars()
     {
         comboSize->addItem(QString::number(size));
     }
-//    connect(comboSize, SIGNAL(activated(QString)), this, SLOT(textSize(QString)));
-//    comboSize->setCurrentIndex(comboSize->findText(QString::number(QApplication::font().pointSize())));
+    connect(comboSize, SIGNAL(activated(QString)), this, SLOT(textSize(QString)));
+    comboSize->setCurrentIndex(comboSize->findText(QString::number(QApplication::font().pointSize())));
 
 }
 
@@ -543,4 +548,48 @@ void MyWord::paste()
 {
     if (activeMyChild())
         activeMyChild()->paste();
+}
+
+void MyWord::textBold()
+{
+    QTextCharFormat fmt;
+    fmt.setFontWeight(boldAct->isChecked() ? QFont::Bold :QFont::Normal);
+    if(activeMyChild())
+        activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+}
+
+void MyWord::textItalic()
+{
+    QTextCharFormat fmt;
+    fmt.setFontItalic(italicAct->isChecked());
+    if(activeMyChild())
+        activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+}
+
+void MyWord::textUnderline()
+{
+    QTextCharFormat fmt;
+    fmt.setFontUnderline(underlineAct->isChecked());
+    if(activeMyChild())
+        activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+}
+
+void MyWord::textFamily(const QString &f)
+{
+    QTextCharFormat fmt;
+    fmt.setFontFamily(f);
+    if (activeMyChild())
+        activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+}
+
+void MyWord::textSize(const QString &p)
+{
+    qreal pointSize = p.toFloat();
+    if (p.toFloat() > 0)
+    {
+        QTextCharFormat fmt;
+        fmt.setFontPointSize(pointSize);
+        if (activeMyChild())
+            activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+    }
 }

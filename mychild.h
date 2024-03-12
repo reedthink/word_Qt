@@ -18,6 +18,7 @@ public:
     bool save();
     bool saveAs();
     bool saveFile(QString fileName);
+    void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
 
 protected:
     void closeEvent(QCloseEvent *event);

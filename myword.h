@@ -98,5 +98,10 @@ private slots:
     void cut();
     void copy();
     void paste();
+    void textBold();
+    void textItalic();
+    void textUnderline();
+    void textFamily(const QString &f);
+    void textSize(const QString &p);
 };
 #endif // MYWORD_H
