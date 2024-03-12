@@ -78,29 +78,31 @@ void MyWord::createActions()
     undoAct->setShortcut(QKeySequence::Undo);
     undoAct->setToolTip("撤销");
     undoAct->setStatusTip(tr("撤销当前操作"));
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
 
     redoAct = new QAction(QIcon(rsrcPath + "/editredo.png"), tr("重做(&R)"), this);
     redoAct->setShortcut(QKeySequence::Redo);
     redoAct->setToolTip("重做");
     redoAct->setStatusTip(tr("重复之前操作"));
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
     cutAct = new QAction(QIcon(rsrcPath + "/editcut.png"), tr("剪切(&T)"), this);
     cutAct->setShortcut(QKeySequence::Cut);
     cutAct->setToolTip("剪切");
     cutAct->setStatusTip(tr("从文档中裁剪所选内容，并将其放入剪贴板"));
-//    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(cutAct, SIGNAL(triggered()), this, SLOT(cut()));
 
     copyAct = new QAction(QIcon(rsrcPath + "/editcopy.png"), tr("复制(&C)"), this);
     copyAct->setShortcut(QKeySequence::Copy);
     copyAct->setToolTip("复制");
     copyAct->setStatusTip(tr("复制所选内容到剪贴板"));
-    //    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(copyAct, SIGNAL(triggered()), this, SLOT(copy()));
 
     pasteAct = new QAction(QIcon(rsrcPath + "/editpaste.png"), tr("粘贴(&P)"), this);
     pasteAct->setShortcut(QKeySequence::Paste);
     pasteAct->setToolTip("粘贴");
     pasteAct->setStatusTip(tr("将剪贴板的内容粘贴到文档"));
-    //    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
+    connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 
     //格式菜单
     boldAct = new QAction(QIcon(rsrcPath + "/textbold.png"), tr("加粗(&B)"), this);
@@ -515,4 +517,30 @@ void MyWord::fileSaveAs()
 {
     if (activeMyChild() && activeMyChild()->saveAs())
         statusBar()->showMessage(tr("保存成功"), 2000);
+}
+
+void MyWord::undo()
+{
+    if (activeMyChild())
+        activeMyChild()->undo();
+}
+void MyWord::redo()
+{
+    if (activeMyChild())
+        activeMyChild()->redo();
+}
+void MyWord::cut()
+{
+    if (activeMyChild())
+        activeMyChild()->cut();
+}
+void MyWord::copy()
+{
+    if (activeMyChild())
+        activeMyChild()->copy();
+}
+void MyWord::paste()
+{
+    if (activeMyChild())
+        activeMyChild()->paste();
 }

@@ -93,5 +93,10 @@ private slots:
     void fileOpen();
     void fileSave();
     void fileSaveAs();
+    void undo();
+    void redo();
+    void cut();
+    void copy();
+    void paste();
 };
 #endif // MYWORD_H
