@@ -42,3 +42,39 @@ void MyChild::closeEvent(QCloseEvent *event)
     //暂时不处理关闭时候的保存逻辑
     event->accept();
 }
+
+bool MyChild::loadFile(const QString &fileName)
+{
+    if (!fileName.isEmpty())
+    {
+        if (!QFile::exists(fileName))
+            return false;
+        QFile file(fileName);
+        if (!file.open(QFile::ReadOnly))
+            return false;
+
+        QByteArray data = file.readAll();
+        QTextCodec *codec = Qt::codecForHtml(data);
+        QString str = codec->toUnicode(data);
+        if (Qt::mightBeRichText(str))
+        {
+            this->setHtml(str);
+        }
+        else{
+            str = QString::fromLocal8Bit(data);
+            this->setPlainText(str);
+        }
+        setCurrentFile(fileName);
+        connect(document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
+        return true;
+    }
+}
+
+void MyChild::setCurrentFile(const QString &fileName)
+{
+    curFile = QFileInfo(fileName).canonicalFilePath();
+    isUntitled = false;
+    document()->setModified(false);
+    setWindowModified(false);
+    setWindowTitle(userFriendlyCurrentFile() + "[*]");
+}

@@ -80,6 +80,8 @@ private:
     MyChild *activeMyChild();
     QSignalMapper *windowMapper;
 
+    QMdiSubWindow *findMyChild(const QString &fileName);
+
 private slots:
     void textAlign(QAction *a);
     void about();
@@ -88,5 +90,6 @@ private slots:
     void updateMenus();
     void updateWindowMenu();
 //    void setActiveSubWindow(QWidget *window);
+    void fileOpen();
 };
 #endif // MYWORD_H

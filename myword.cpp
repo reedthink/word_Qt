@@ -45,7 +45,7 @@ void MyWord::createActions()
     openAct->setShortcuts(QKeySequence::Open);
     openAct->setToolTip("打开");
     openAct->setStatusTip(tr("打开已存在的文档"));
-//    connect(openAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
+    connect(openAct, SIGNAL(triggered()), this, SLOT(fileOpen()));
 
     saveAct = new QAction(QIcon(rsrcPath + "/filesave.png"), tr("保存(&s)"), this);
     saveAct->setShortcuts(QKeySequence::Save);
@@ -466,4 +466,41 @@ void MyWord::closeEvent(QCloseEvent *event)
 void MyWord::createStatusBar()
 {
     statusBar()->showMessage(tr("就绪"));
+}
+
+void MyWord::fileOpen()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("打开"), QString(), tr("HTML 文档 (*.htm *.html);;所有文件 (*.*)"));
+    if (!fileName.isEmpty())
+    {
+        QMdiSubWindow *existing = findMyChild(fileName);
+        if (existing)
+        {
+            mdiArea->setActiveSubWindow(existing);
+            return ;
+        }
+        MyChild *child = createMyChild();
+        if (child->loadFile(fileName))
+        {
+            statusBar()->showMessage(tr("文件已载入"), 2000);
+            child->show();
+        }
+        else
+        {
+            child->close();
+        }
+    }
+}
+
+QMdiSubWindow *MyWord::findMyChild(const QString &fileName)
+{
+    QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
+
+    foreach (QMdiSubWindow *window, mdiArea->subWindowList())
+    {
+        MyChild *myChild = qobject_cast<MyChild *> (window->widget());
+        if (myChild->currentFile() == canonicalFilePath)
+            return window;
+    }
+    return 0;
 }
