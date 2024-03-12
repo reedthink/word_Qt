@@ -19,6 +19,8 @@ public:
     bool saveAs();
     bool saveFile(QString fileName);
     void mergeFormatOnWordOrSelection(const QTextCharFormat &format);
+    void setAlign(int align);
+    void setStyle(int style);
 
 protected:
     void closeEvent(QCloseEvent *event);

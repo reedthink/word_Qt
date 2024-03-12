@@ -139,3 +139,79 @@ void MyChild::mergeFormatOnWordOrSelection(const QTextCharFormat &format)
     cursor.mergeCharFormat(format);
     this->mergeCurrentCharFormat(format);
 }
+
+void MyChild::setAlign(int align)
+{
+    if (align == 1)
+        this->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
+    else if (align == 2)
+        this->setAlignment(Qt::AlignHCenter);
+    else if (align == 3)
+        this->setAlignment(Qt::AlignRight | Qt::AlignAbsolute);
+    else if (align == 4)
+        this->setAlignment(Qt::AlignJustify);
+}
+
+void MyChild::setStyle(int style)
+{
+    QTextCursor cursor = this->textCursor();
+
+    if (style == 0)
+    {
+        QTextListFormat::Style stylename = QTextListFormat::ListDisc;
+        switch (style)
+        {
+            default:
+            case 1:
+                stylename = QTextListFormat::ListDisc;
+                break;
+            case 2:
+                stylename = QTextListFormat::ListCircle;
+                break;
+            case 3:
+                stylename = QTextListFormat::ListSquare;
+                break;
+            case 4:
+                stylename = QTextListFormat::ListDecimal;
+                break;
+            case 5:
+                stylename = QTextListFormat::ListLowerAlpha;
+                break;
+            case 6:
+                stylename = QTextListFormat::ListUpperAlpha;
+                break;
+            case 7:
+                stylename = QTextListFormat::ListLowerRoman;
+                break;
+            case 8:
+                stylename = QTextListFormat::ListUpperRoman;
+                break;
+        }
+        cursor.beginEditBlock();
+
+        QTextBlockFormat blockFmt = cursor.blockFormat();
+
+        QTextListFormat listFmt;
+
+        if (cursor.currentList())
+        {
+            listFmt = cursor.currentList()->format();
+        }
+        else
+        {
+            listFmt.setIndent(blockFmt.indent() + 1);
+            blockFmt.setIndent(0);
+            cursor.setBlockFormat(blockFmt);
+        }
+
+        listFmt.setStyle(stylename);
+
+        cursor.createList(listFmt);
+        cursor.endEditBlock();
+    }
+    else{
+        QTextBlockFormat bfmt;
+        bfmt.setObjectIndex(-1);
+        cursor.mergeBlockFormat(bfmt);
+    }
+}

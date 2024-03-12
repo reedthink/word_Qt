@@ -29,6 +29,7 @@ private:
     void createMenus(); //创建菜单
     void createToolBars();
     void createStatusBar();
+    void colorChanged(const QColor &c);
 
     QMenu *fileMenu;
 
@@ -89,7 +90,7 @@ private slots:
     MyChild *createMyChild();
     void updateMenus();
     void updateWindowMenu();
-//    void setActiveSubWindow(QWidget *window);
+    void setActiveSubWindow(QWidget *window);
     void fileOpen();
     void fileSave();
     void fileSaveAs();
@@ -103,5 +104,7 @@ private slots:
     void textUnderline();
     void textFamily(const QString &f);
     void textSize(const QString &p);
+    void textColor();
+    void textStyle(int styleIndex);
 };
 #endif // MYWORD_H

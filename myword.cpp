@@ -177,7 +177,7 @@ void MyWord::createActions()
     colorAct = new QAction(pix, tr("颜色(&C)..."), this);
     colorAct->setToolTip("颜色");
     colorAct->setStatusTip(tr("设置文字颜色"));
-//    connect(colorAct, SIGNAL(triggered()), this, SLOT(textColor()));
+    connect(colorAct, SIGNAL(triggered()), this, SLOT(textColor()));
 
     //窗口主菜单
     closeAct = new QAction(tr("关闭(&O)"), this);
@@ -272,7 +272,20 @@ void MyWord::createMenus()
 
 }
 
-void MyWord::textAlign(QAction *a){}
+void MyWord::textAlign(QAction *a)
+{
+    if (activeMyChild())
+    {
+        if (a == leftAlignAct)
+            activeMyChild()->setAlign(1);
+        else if (a == centerAct)
+            activeMyChild()->setAlign(2);
+        else if (a == rightAlignAct)
+            activeMyChild()->setAlign(3);
+        else if (a == justifyAct)
+            activeMyChild()->setAlign(4);
+    }
+}
 
 void MyWord::about()
 {
@@ -326,7 +339,7 @@ void MyWord::createToolBars()
     comboStyle->addItem("编号 (ⅰ.ⅱ.ⅲ.)");
     comboStyle->addItem("编号 (Ⅰ.Ⅱ.Ⅲ.)");
     comboStyle->setStatusTip("段落加标号或编号");
-//    connect(comboStyle, SIGNAL(activated(int)), this, SLOT(textStyle(int)));
+    connect(comboStyle, SIGNAL(activated(int)), this, SLOT(textStyle(int)));
 
     comboFont = new QFontComboBox();
     comboToolBar->addWidget(comboFont);
@@ -512,6 +525,13 @@ QMdiSubWindow *MyWord::findMyChild(const QString &fileName)
     return 0;
 }
 
+void MyWord::setActiveSubWindow(QWidget *window)
+{
+    if(!window)
+        return;
+    mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow*>(window));
+}
+
 void MyWord::fileSave()
 {
     if (activeMyChild() && activeMyChild()->save())
@@ -592,4 +612,33 @@ void MyWord::textSize(const QString &p)
         if (activeMyChild())
             activeMyChild()->mergeFormatOnWordOrSelection(fmt);
     }
+}
+
+void MyWord::textColor()
+{
+    if (activeMyChild())
+    {
+        QColor col = QColorDialog::getColor(activeMyChild()->textColor(), this);
+        if (!col.isValid())
+            return;
+        QTextCharFormat fmt;
+        fmt.setForeground(col);
+        activeMyChild()->mergeFormatOnWordOrSelection(fmt);
+        colorChanged(col); //还没实现
+    }
+}
+
+void MyWord::textStyle(int styleIndex)
+{
+    if (activeMyChild())
+    {
+        activeMyChild()->setStyle(styleIndex);
+    }
+}
+
+void MyWord::colorChanged(const QColor &c)
+{
+    QPixmap pix(16, 16);
+    pix.fill(c);
+    colorAct->setIcon(pix);
 }
