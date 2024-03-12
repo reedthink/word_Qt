@@ -15,6 +15,9 @@ public:
         return curFile;
     }
     bool loadFile(const QString &fileName);
+    bool save();
+    bool saveAs();
+    bool saveFile(QString fileName);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -23,6 +26,7 @@ private slots:
 private:
     QString strippedName(const QString &fullFileName);
     void setCurrentFile(const QString &fileName);
+    bool maybeSave();
     QString curFile;
     bool isUntitled; //是否保存在硬盘上
 };

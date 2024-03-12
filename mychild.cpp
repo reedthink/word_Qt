@@ -39,8 +39,14 @@ QString MyChild::strippedName(const QString &fullFileName)
 
 void MyChild::closeEvent(QCloseEvent *event)
 {
-    //暂时不处理关闭时候的保存逻辑
-    event->accept();
+    if (maybeSave())
+    {
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
+    }
 }
 
 bool MyChild::loadFile(const QString &fileName)
@@ -78,3 +84,50 @@ void MyChild::setCurrentFile(const QString &fileName)
     setWindowModified(false);
     setWindowTitle(userFriendlyCurrentFile() + "[*]");
 }
+
+bool MyChild::save()
+{
+    if (isUntitled)
+    {
+        return saveAs();
+    }
+    else
+    {
+        return saveFile(curFile);
+    }
+}
+
+bool MyChild::saveAs()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("另存为"), curFile, tr("HTML 文档 (*.htm *.html);;所有文件 (*.*)"));
+    if (fileName.isEmpty())
+        return false;
+    return saveFile(fileName);
+}
+
+bool MyChild::saveFile(QString fileName)
+{
+    if (!(fileName.endsWith(".htm", Qt::CaseInsensitive) || fileName.endsWith(".html", Qt::CaseInsensitive)))
+    {
+        fileName += ".html";
+    }
+    QTextDocumentWriter writer(fileName);
+    bool success = writer.write(this->document());
+    if (success)
+        setCurrentFile(fileName);
+    return success;
+}
+
+bool MyChild::maybeSave()
+{
+    if (!document()->isModified())
+        return true;
+    QMessageBox::StandardButton ret;
+    ret = QMessageBox::warning(this, tr("Myself Qt Word"), tr("文档 '%1'已被修改，保存吗？").arg(userFriendlyCurrentFile()), QMessageBox::Save | QMessageBox:: Discard | QMessageBox::Cancel);
+    if (ret == QMessageBox::Save)
+        return save();
+    else if (ret == QMessageBox::Cancel)
+        return false;
+    return true;
+}
+

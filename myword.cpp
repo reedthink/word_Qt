@@ -51,12 +51,12 @@ void MyWord::createActions()
     saveAct->setShortcuts(QKeySequence::Save);
     saveAct->setToolTip("保存");
     saveAct->setStatusTip(tr("将当前文档存盘"));
-//    connect(saveAct, SIGNAL(triggered()), this, SLOT(fileSave()));
+    connect(saveAct, SIGNAL(triggered()), this, SLOT(fileSave()));
 
     saveAsAct = new QAction(tr("另存为(&A)..."), this);
     saveAsAct->setShortcuts(QKeySequence::SaveAs);
     saveAsAct->setStatusTip(tr("以一个新名字保存文档"));
-//    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
+    connect(saveAsAct, SIGNAL(triggered()), this, SLOT(fileSaveAs()));
 
     printAct = new QAction(QIcon(rsrcPath + "/fileprint.png"), tr("打印(&P)..."), this);
     printAct->setShortcuts(QKeySequence::Print);
@@ -503,4 +503,16 @@ QMdiSubWindow *MyWord::findMyChild(const QString &fileName)
             return window;
     }
     return 0;
+}
+
+void MyWord::fileSave()
+{
+    if (activeMyChild() && activeMyChild()->save())
+        statusBar()->showMessage(tr("保存成功"), 2000);
+}
+
+void MyWord::fileSaveAs()
+{
+    if (activeMyChild() && activeMyChild()->saveAs())
+        statusBar()->showMessage(tr("保存成功"), 2000);
 }

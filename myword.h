@@ -91,5 +91,7 @@ private slots:
     void updateWindowMenu();
 //    void setActiveSubWindow(QWidget *window);
     void fileOpen();
+    void fileSave();
+    void fileSaveAs();
 };
 #endif // MYWORD_H
