@@ -156,7 +156,7 @@ void MyChild::setStyle(int style)
 {
     QTextCursor cursor = this->textCursor();
 
-    if (style == 0)
+    if (style != 0)
     {
         QTextListFormat::Style stylename = QTextListFormat::ListDisc;
         switch (style)
@@ -203,7 +203,6 @@ void MyChild::setStyle(int style)
             blockFmt.setIndent(0);
             cursor.setBlockFormat(blockFmt);
         }
-
         listFmt.setStyle(stylename);
 
         cursor.createList(listFmt);
