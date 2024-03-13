@@ -1,6 +1,7 @@
 #include "myword.h"
 #include "mychild.h"
 #include <QtWidgets>
+#include <QDebug>
 
 const QString rsrcPath = ":/images";
 
@@ -412,6 +413,8 @@ void MyWord::updateMenus()
 
     bool hasSelection = (activeMyChild() && activeMyChild()->textCursor().hasSelection());
 
+    // qDebug() << hasSelection;
+
     cutAct->setEnabled(hasSelection);
     copyAct->setEnabled(hasSelection);
 
@@ -427,6 +430,7 @@ void MyWord::updateMenus()
 
 MyChild *MyWord::activeMyChild()
 {
+    // qDebug()<<mdiArea->activeSubWindow();
     if(QMdiSubWindow *activeSubWindow = mdiArea->activeSubWindow())
         return qobject_cast<MyChild *>(activeSubWindow->widget());
     return 0;
@@ -459,6 +463,7 @@ void MyWord::updateWindowMenu()
         else{
             text = tr("%1 %2").arg(i+1).arg(child->userFriendlyCurrentFile());
         }
+        // qDebug() << text << i;
         QAction *action = windowMenu->addAction(text);
         action->setCheckable(true);
         action->setChecked(child == activeMyChild());
@@ -504,6 +509,7 @@ void MyWord::fileOpen()
         {
             statusBar()->showMessage(tr("文件已载入"), 2000);
             child->show();
+            enabledText();
         }
         else
         {
