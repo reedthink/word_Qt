@@ -112,5 +112,6 @@ private slots:
     void filePrint();
     void filePrintPreview();
     void printPreview(QPrinter *);
+    void closeAllWindows();
 };
 #endif // MYWORD_H

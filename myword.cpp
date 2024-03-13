@@ -673,3 +673,8 @@ void MyWord::printPreview(QPrinter *printer)
 {
     activeMyChild()->print(printer);
 }
+
+void MyWord::closeAllWindows()
+{
+
+}

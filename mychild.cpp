@@ -5,6 +5,11 @@ MyChild::MyChild()
 {
     setAttribute(Qt::WA_DeleteOnClose);// 子窗口关闭时销毁这个类的对象
     isUntitled = true; // 初始化为没保存在硬盘上
+
+    connect(this, &MyChild::cursorPositionChanged, this, &MyChild::highlightCurrentLine);
+
+    highlightCurrentLine();
+    setHighlight();
 }
 
 void MyChild::newFile()
@@ -213,4 +218,34 @@ void MyChild::setStyle(int style)
         bfmt.setObjectIndex(-1);
         cursor.mergeBlockFormat(bfmt);
     }
+}
+
+void MyChild::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraSelections;
+    if (!isReadOnly())
+    {
+        QTextEdit::ExtraSelection selection;
+
+        QColor lineColor = QColor(Qt::yellow).lighter(160);
+
+        selection.format.setBackground(lineColor);
+        selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+        selection.cursor = textCursor();
+        selection.cursor.clearSelection();
+        extraSelections.append(selection);
+    }
+
+    setExtraSelections(extraSelections);
+}
+
+void MyChild::setHighlight()
+{
+    QFont font;
+    font.setFamily("Courier");
+    font.setFixedPitch(true);
+    font.setPointSize(10);
+
+    highlighter = new Highlighter(this->document());
+
 }
